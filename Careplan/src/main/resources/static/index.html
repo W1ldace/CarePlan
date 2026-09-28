@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careplan - Medication Adherence System</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-dark navbar-custom shadow-sm mb-4">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2 mb-0" href="#">
+                <span class="brand-icon"><i class="bi bi-heart-pulse-fill text-white fs-4"></i></span>
+                <span class="fs-4">Careplan System</span>
+            </a>
+            <span class="badge bg-white text-primary fw-bold px-3 py-2 rounded-pill shadow-sm">
+                <i class="bi bi-check-circle-fill text-success me-1"></i> API Connected
+            </span>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <!-- Global Toast Alert Container -->
+        <div id="globalAlert" class="mb-3"></div>
+
+        <!-- Top Interactive Metric Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="stat-card d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small fw-bold text-uppercase">Patients</div>
+                        <div class="fs-3 fw-bold text-dark" id="statPatients">0</div>
+                    </div>
+                    <div class="stat-icon-wrapper bg-primary-subtle text-primary">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small fw-bold text-uppercase">Prescriptions</div>
+                        <div class="fs-3 fw-bold text-dark" id="statMedicines">0</div>
+                    </div>
+                    <div class="stat-icon-wrapper bg-success-subtle text-success">
+                        <i class="bi bi-capsule"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small fw-bold text-uppercase">Doses Today</div>
+                        <div class="fs-3 fw-bold text-dark" id="statDoses">0</div>
+                    </div>
+                    <div class="stat-icon-wrapper bg-info-subtle text-info">
+                        <i class="bi bi-calendar-check-fill"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small fw-bold text-uppercase">Overdue Alerts</div>
+                        <div class="fs-3 fw-bold text-danger" id="statAlerts">0</div>
+                    </div>
+                    <div class="stat-icon-wrapper bg-danger-subtle text-danger">
+                        <i class="bi bi-bell-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-pills nav-pills-custom nav-fill mb-4" id="mainTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="patients-tab" data-bs-toggle="pill" data-bs-target="#patients-pane" type="button" onclick="loadPatients()">
+                    <i class="bi bi-person-gear me-1"></i> Patients
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="medicines-tab" data-bs-toggle="pill" data-bs-target="#medicines-pane" type="button" onclick="loadPatientDropdowns()">
+                    <i class="bi bi-prescription2 me-1"></i> Medicines & Schedules
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="doses-tab" data-bs-toggle="pill" data-bs-target="#doses-pane" type="button" onclick="loadPatientDropdowns()">
+                    <i class="bi bi-clock-history me-1"></i> Today's Doses
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="alerts-tab" data-bs-toggle="pill" data-bs-target="#alerts-pane" type="button" onclick="loadPatientDropdowns()">
+                    <i class="bi bi-exclamation-octagon me-1"></i> Overdue & History
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Panes -->
+        <div class="tab-content" id="mainTabContent">
+
+            <!-- TAB 1: PATIENTS -->
+            <div class="tab-pane fade show active" id="patients-pane" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card card-custom bg-white">
+                            <div class="card-header bg-white py-3 fw-bold text-primary d-flex align-items-center gap-2">
+                                <i class="bi bi-person-plus-fill"></i> Register New Patient
+                            </div>
+                            <div class="card-body">
+                                <form id="patientForm" onsubmit="createPatient(event)">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Patient Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="pName" placeholder="e.g. Eleanor Vance" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Age (Years)</label>
+                                        <input type="number" class="form-control" id="pAge" placeholder="e.g. 52" min="0">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 fw-semibold btn-action" id="btnSavePatient">
+                                        <i class="bi bi-save me-1"></i> Save Patient Record
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card card-custom bg-white">
+                            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-dark"><i class="bi bi-folder-symlink me-1 text-primary"></i> Patient Directory</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="text" class="form-control form-control-sm" id="patientSearchInput" placeholder="Filter patient name..." onkeyup="filterPatientTable()">
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="loadPatients()"><i class="bi bi-arrow-clockwise"></i></button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-custom table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Age</th>
+                                                <th>Prescriptions</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="patientTable">
+                                            <tr><td colspan="5" class="text-center py-4 text-muted">Loading patients...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: MEDICINES & SCHEDULES -->
+            <div class="tab-pane fade" id="medicines-pane" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-lg-5">
+                        <div class="card card-custom bg-white">
+                            <div class="card-header bg-white py-3 fw-bold text-success d-flex align-items-center gap-2">
+                                <i class="bi bi-plus-circle-fill"></i> Add Medicine & Schedule
+                            </div>
+                            <div class="card-body">
+                                <form id="medForm" onsubmit="addMedicine(event)">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Target Patient <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="medPatientSelect" required onchange="loadMedicinesForSelectedPatient()">
+                                            <option value="">-- Choose Patient --</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Medicine Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="mName" placeholder="e.g. Metformin" required>
+                                    </div>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">Dosage</label>
+                                            <input type="text" class="form-control" id="mDosage" placeholder="e.g. 500mg">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">Scheduled Time</label>
+                                            <input type="time" class="form-control" id="sTime" value="08:00" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Instructions</label>
+                                        <input type="text" class="form-control" id="mInstructions" placeholder="e.g. Take twice daily with meals">
+                                    </div>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">Start Date</label>
+                                            <input type="date" class="form-control" id="sStartDate" required>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">Frequency</label>
+                                            <select class="form-select" id="sFreq">
+                                                <option value="DAILY">DAILY</option>
+                                                <option value="WEEKLY">WEEKLY</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100 fw-semibold btn-action" id="btnSaveMed">
+                                        <i class="bi bi-check-circle me-1"></i> Attach Medicine & Schedule
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="card card-custom bg-white">
+                            <div class="card-header bg-white py-3 fw-bold text-dark d-flex align-items-center gap-2">
+                                <i class="bi bi-capsule-pill text-success"></i> Active Prescriptions List
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-custom table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Medicine</th>
+                                                <th>Dosage</th>
+                                                <th>Instructions</th>
+                                                <th>Schedule Info</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="medTable">
+                                            <tr><td colspan="4" class="text-center py-4 text-muted">Select a patient on the left to view active prescriptions.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: TODAY'S DOSES -->
+            <div class="tab-pane fade" id="doses-pane" role="tabpanel">
+                <div class="card card-custom bg-white">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3 w-50">
+                            <label class="fw-bold text-primary mb-0 me-2" style="white-space: nowrap;">Patient:</label>
+                            <select class="form-select" id="dosePatientSelect" onchange="loadTodayDoses()">
+                                <option value="">-- Select Patient --</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="loadTodayDoses()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-custom table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Schedule ID</th>
+                                        <th>Time Slot</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="doseTable">
+                                    <tr><td colspan="5" class="text-center py-4 text-muted">Select a patient above to load today's expected doses.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: ALERTS & HISTORY -->
+            <div class="tab-pane fade" id="alerts-pane" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-white">
+                            <div class="card-header bg-white py-3 fw-bold text-danger d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-bell-fill me-1"></i> Overdue Alerts (>1 Hour)</span>
+                                <select class="form-select form-select-sm w-50" id="alertPatientSelect" onchange="loadOverdueAlerts()">
+                                    <option value="">-- Select Patient --</option>
+                                </select>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush" id="overdueList">
+                                    <div class="list-group-item text-center py-4 text-muted">Select a patient to check overdue alerts.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-white">
+                            <div class="card-header bg-white py-3 fw-bold text-dark">
+                                <i class="bi bi-clock-history me-1 text-primary"></i> Missed Dose History
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-4">
+                                        <select class="form-select form-select-sm" id="historyPatientSelect">
+                                            <option value="">-- Patient --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="date" class="form-control form-control-sm" id="histStart">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="date" class="form-control form-control-sm" id="histEnd">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-sm btn-primary w-100" onclick="loadMissedHistory()"><i class="bi bi-search"></i> Search</button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-custom table-sm table-bordered align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Time</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="historyTable">
+                                            <tr><td colspan="3" class="text-center text-muted py-3">Select dates and click search.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        let allPatientsData = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('sStartDate').valueAsDate = new Date();
+            document.getElementById('histStart').valueAsDate = new Date(Date.now() - 30*24*60*60*1000);
+            document.getElementById('histEnd').valueAsDate = new Date();
+            loadPatients();
+            loadPatientDropdowns();
+        });
+
+        function showAlert(msg, type = 'success') {
+            const div = document.getElementById('globalAlert');
+            div.innerHTML = `
+                <div class="alert alert-${type} custom-alert alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi ${type==='success'?'bi-check-circle-fill':'bi-exclamation-triangle-fill'} me-2"></i> ${escapeHtml(msg)}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>`;
+        }
+
+        function escapeHtml(str) {
+            return str ? String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+        }
+
+        // --- PATIENTS ---
+        async function loadPatients() {
+            const tbody = document.getElementById('patientTable');
+            try {
+                const res = await fetch('/api/patients');
+                allPatientsData = await res.json();
+                document.getElementById('statPatients').innerText = allPatientsData.length;
+
+                // Calculate medicines count across all patients
+                let totalMeds = 0;
+                allPatientsData.forEach(p => { if (p.medicines) totalMeds += p.medicines.length; });
+                document.getElementById('statMedicines').innerText = totalMeds;
+
+                renderPatientTable(allPatientsData);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Failed to load patients. Check backend.</td></tr>`;
+            }
+        }
+
+        function renderPatientTable(patients) {
+            const tbody = document.getElementById('patientTable');
+            if (!patients.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No patients found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = patients.map(p => `
+                <tr>
+                    <td><span class="badge bg-secondary">#${p.id}</span></td>
+                    <td class="fw-bold">${escapeHtml(p.name)}</td>
+                    <td>${p.age ? p.age + ' yrs' : 'N/A'}</td>
+                    <td><span class="badge bg-info text-dark">${p.medicines ? p.medicines.length : 0} Medicines</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary btn-action" onclick="selectPatientForDoses(${p.id})">
+                            <i class="bi bi-calendar-check me-1"></i> Doses
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterPatientTable() {
+            const query = document.getElementById('patientSearchInput').value.toLowerCase();
+            const filtered = allPatientsData.filter(p => p.name.toLowerCase().includes(query));
+            renderPatientTable(filtered);
+        }
+
+        async function createPatient(e) {
+            e.preventDefault();
+            const name = document.getElementById('pName').value.trim();
+            const ageVal = document.getElementById('pAge').value;
+            const age = ageVal ? parseInt(ageVal, 10) : null;
+
+            try {
+                const res = await fetch('/api/patients', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, age })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    showAlert(data.message || (data.errors && data.errors.name ? 'Validation Error: ' + data.errors.name : 'Error creating patient'), 'danger');
+                    return;
+                }
+                showAlert(`Patient "${data.name}" registered successfully!`);
+                document.getElementById('patientForm').reset();
+                loadPatients();
+                loadPatientDropdowns();
+            } catch (err) {
+                showAlert('Network error saving patient.', 'danger');
+            }
+        }
+
+        // --- DROPDOWNS ---
+        async function loadPatientDropdowns() {
+            try {
+                const res = await fetch('/api/patients');
+                const patients = await res.json();
+                const options = '<option value="">-- Select Patient --</option>' + 
+                    patients.map(p => `<option value="${p.id}">#${p.id} - ${escapeHtml(p.name)}</option>`).join('');
+                
+                ['medPatientSelect', 'dosePatientSelect', 'alertPatientSelect', 'historyPatientSelect'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        const currentVal = el.value;
+                        el.innerHTML = options;
+                        el.value = currentVal;
+                    }
+                });
+            } catch (err) {}
+        }
+
+        // --- MEDICINES ---
+        async function loadMedicinesForSelectedPatient() {
+            const patientId = document.getElementById('medPatientSelect').value;
+            const tbody = document.getElementById('medTable');
+            if (!patientId) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">Select a patient to view prescriptions.</td></tr>`;
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/patients/${patientId}`);
+                const patient = await res.json();
+                if (!patient.medicines || !patient.medicines.length) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">No medicines prescribed for ${escapeHtml(patient.name)} yet.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = patient.medicines.map(m => `
+                    <tr>
+                        <td class="fw-bold">${escapeHtml(m.name)}</td>
+                        <td><span class="badge bg-light text-dark border">${escapeHtml(m.dosage || 'N/A')}</span></td>
+                        <td class="small text-secondary">${escapeHtml(m.instructions || 'None')}</td>
+                        <td>
+                            ${m.schedules ? m.schedules.map(s => `<span class="badge bg-primary"><i class="bi bi-clock"></i> ${s.scheduledTime}</span> <span class="badge bg-secondary">${s.frequency}</span>`).join('') : ''}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-danger">Error loading prescriptions.</td></tr>`;
+            }
+        }
+
+        async function addMedicine(e) {
+            e.preventDefault();
+            const patientId = document.getElementById('medPatientSelect').value;
+            if (!patientId) {
+                showAlert('Please select a patient first.', 'warning');
+                return;
+            }
+
+            const name = document.getElementById('mName').value.trim();
+            const dosage = document.getElementById('mDosage').value.trim();
+            const instructions = document.getElementById('mInstructions').value.trim();
+            const scheduledTime = document.getElementById('sTime').value;
+            const frequency = document.getElementById('sFreq').value;
+            const startDate = document.getElementById('sStartDate').value;
+
+            const payload = {
+                name, dosage, instructions,
+                schedules: [{ scheduledTime: scheduledTime.length === 5 ? scheduledTime + ':00' : scheduledTime, frequency, startDate }]
+            };
+
+            try {
+                const res = await fetch(`/api/patients/${patientId}/medicines`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    showAlert(data.message || 'Validation error adding medicine.', 'danger');
+                    return;
+                }
+                showAlert(`Prescription "${data.name}" added successfully!`);
+                document.getElementById('mName').value = '';
+                document.getElementById('mDosage').value = '';
+                document.getElementById('mInstructions').value = '';
+                loadMedicinesForSelectedPatient();
+                loadPatients();
+            } catch (err) {
+                showAlert('Error submitting prescription.', 'danger');
+            }
+        }
+
+        // --- DOSES ---
+        function selectPatientForDoses(patientId) {
+            const tabBtn = document.getElementById('doses-tab');
+            const tab = new bootstrap.Tab(tabBtn);
+            tab.show();
+            setTimeout(() => {
+                const select = document.getElementById('dosePatientSelect');
+                select.value = patientId;
+                loadTodayDoses();
+            }, 100);
+        }
+
+        async function loadTodayDoses() {
+            const patientId = document.getElementById('dosePatientSelect').value;
+            const tbody = document.getElementById('doseTable');
+            if (!patientId) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Select a patient above to load today's doses.</td></tr>`;
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/patients/${patientId}/doses/today`);
+                const doses = await res.json();
+                document.getElementById('statDoses').innerText = doses.length;
+
+                if (!doses.length) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No doses scheduled for today.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = doses.map(d => {
+                    const statusKey = (d.status || 'PENDING').toUpperCase();
+                    let badgeCss = 'badge-pending';
+                    if (statusKey === 'TAKEN') badgeCss = 'badge-taken';
+                    if (statusKey === 'MISSED') badgeCss = 'badge-missed';
+
+                    const isTaken = statusKey === 'TAKEN';
+                    return `
+                        <tr>
+                            <td><span class="badge bg-secondary">Schedule #${d.schedule ? d.schedule.id : ''}</span></td>
+                            <td class="fw-bold"><i class="bi bi-clock text-primary me-1"></i> ${d.scheduledTime || ''}</td>
+                            <td>${d.scheduledDate || ''}</td>
+                            <td><span class="badge-status ${badgeCss}">${statusKey}</span></td>
+                            <td>
+                                ${isTaken ? '<span class="text-success small fw-bold"><i class="bi bi-check-circle-fill"></i> Completed</span>' : `
+                                    <button class="btn btn-sm btn-success btn-action me-1" onclick="logDoseStatus(${d.schedule.id}, '${d.scheduledDate}', 'TAKEN')">
+                                        <i class="bi bi-check-lg"></i> Mark Taken
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger btn-action" onclick="logDoseStatus(${d.schedule.id}, '${d.scheduledDate}', 'MISSED')">
+                                        Mark Missed
+                                    </button>
+                                `}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Failed to load today's doses.</td></tr>`;
+            }
+        }
+
+        async function logDoseStatus(scheduleId, scheduledDate, status) {
+            try {
+                const res = await fetch('/api/doselogs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        schedule: { id: scheduleId },
+                        scheduledDate: scheduledDate,
+                        status: status
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    showAlert(data.message || 'Failed to log dose.', 'danger');
+                    return;
+                }
+                showAlert(`Dose slot marked as ${status}!`);
+                loadTodayDoses();
+            } catch (err) {
+                showAlert('Error updating dose status.', 'danger');
+            }
+        }
+
+        // --- ALERTS & HISTORY ---
+        async function loadOverdueAlerts() {
+            const patientId = document.getElementById('alertPatientSelect').value;
+            const container = document.getElementById('overdueList');
+            if (!patientId) {
+                container.innerHTML = `<div class="list-group-item text-center py-4 text-muted">Select a patient to check overdue alerts.</div>`;
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/patients/${patientId}/alerts/overdue`);
+                const alerts = await res.json();
+                document.getElementById('statAlerts').innerText = alerts.length;
+
+                if (!alerts.length) {
+                    container.innerHTML = `<div class="list-group-item text-center py-4 text-success"><i class="bi bi-shield-check fs-3 d-block mb-1"></i> All scheduled doses are up to date!</div>`;
+                    return;
+                }
+
+                container.innerHTML = alerts.map(s => `
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge-status badge-overdue mb-1"><i class="bi bi-exclamation-triangle-fill"></i> OVERDUE >1 HOUR</span>
+                            <div class="fw-bold">Scheduled Time: ${s.scheduledTime}</div>
+                            <small class="text-muted">Frequency: ${s.frequency}</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-success btn-action" onclick="selectPatientForDoses(${patientId})">
+                            Log Dose Now
+                        </button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = `<div class="list-group-item text-center py-4 text-danger">Error loading alerts.</div>`;
+            }
+        }
+
+        async function loadMissedHistory() {
+            const patientId = document.getElementById('historyPatientSelect').value;
+            const startDate = document.getElementById('histStart').value;
+            const endDate = document.getElementById('histEnd').value;
+            const tbody = document.getElementById('historyTable');
+
+            if (!patientId || !startDate || !endDate) {
+                showAlert('Please select a patient and valid date range.', 'warning');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/patients/${patientId}/doselogs/missed?startDate=${startDate}&endDate=${endDate}`);
+                const logs = await res.json();
+
+                if (!logs.length) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No missed doses found for this date range.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = logs.map(l => `
+                    <tr>
+                        <td>${l.scheduledDate}</td>
+                        <td>${l.scheduledTime || 'N/A'}</td>
+                        <td><span class="badge-status badge-missed">${l.status}</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center text-danger py-3">Error fetching history.</td></tr>`;
+            }
+        }
+    </script>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

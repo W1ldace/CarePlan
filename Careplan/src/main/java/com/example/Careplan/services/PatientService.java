@@ -19,4 +19,8 @@ public class PatientService {
         return patientRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Patient not found with id: " + id));
     }
+
+    public java.util.List<Patient> getAllPatients() {
+        return patientRepo.findAll();
+    }
 }

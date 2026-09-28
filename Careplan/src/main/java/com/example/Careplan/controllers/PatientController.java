@@ -22,4 +22,9 @@ public class PatientController {
     public Patient getPatient(@PathVariable Long id) {
         return patientService.getPatient(id);
     }
+
+    @GetMapping
+    public java.util.List<Patient> getAllPatients() {
+        return patientService.getAllPatients();
+    }
 }

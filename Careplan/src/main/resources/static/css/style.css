@@ -1,0 +1,178 @@
+/* Careplan Custom Styling & Animations */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    --success-gradient: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    --danger-gradient: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+    --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --card-shadow-hover: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #f4f6f9;
+    color: #2b3445;
+}
+
+/* Custom Navbar */
+.navbar-custom {
+    background: var(--primary-gradient);
+    padding: 1rem 0;
+}
+
+.brand-icon {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 12px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+}
+
+/* Interactive Stat Cards */
+.stat-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 14px;
+    padding: 1.25rem;
+    transition: all 0.25s ease-in-out;
+    box-shadow: var(--card-shadow);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.stat-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* Custom Nav Pills / Tabs */
+.nav-pills-custom {
+    background: #ffffff;
+    padding: 6px;
+    border-radius: 14px;
+    box-shadow: var(--card-shadow);
+}
+
+.nav-pills-custom .nav-link {
+    color: #6c757d;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px 18px;
+    transition: all 0.2s ease;
+}
+
+.nav-pills-custom .nav-link:hover {
+    color: #0d6efd;
+    background-color: #f0f4ff;
+}
+
+.nav-pills-custom .nav-link.active {
+    background: var(--primary-gradient);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+}
+
+/* Cards & Forms */
+.card-custom {
+    border: none;
+    border-radius: 14px;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.2s;
+    overflow: hidden;
+}
+
+.card-custom .card-header {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 1rem 1.25rem;
+}
+
+/* Interactive Table Styling */
+.table-custom {
+    margin-bottom: 0;
+}
+
+.table-custom th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    font-weight: 700;
+    padding: 12px 16px;
+}
+
+.table-custom td {
+    padding: 14px 16px;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8fbff;
+}
+
+/* Badges & Status */
+.badge-status {
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-taken {
+    background-color: #e6f4ea;
+    color: #137333;
+    border: 1px solid #ceead6;
+}
+
+.badge-missed {
+    background-color: #fce8e6;
+    color: #c5221f;
+    border: 1px solid #fad2cf;
+}
+
+.badge-pending {
+    background-color: #fef7e0;
+    color: #b06000;
+    border: 1px solid #feefc3;
+}
+
+.badge-overdue {
+    background-color: #fce8e6;
+    color: #c5221f;
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* Action Buttons */
+.btn-action {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 6px 14px;
+    transition: all 0.2s;
+}
+
+.btn-action:hover {
+    transform: scale(1.03);
+}
+
+/* Toast Alerts */
+.custom-alert {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
