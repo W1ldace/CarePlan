@@ -15,9 +15,13 @@ public class ScheduleService {
 
     public List<DoseLog> getTodayDoses(Long patientId) {
         LocalDate today = LocalDate.now();
+        // Fetch all schedules for the patient and stream them for processing
         return scheduleRepo.findByMedicinePatientId(patientId).stream()
+        // (Today must be >= start date AND today must be <= end date, if an end date exists)
             .filter(s -> !today.isBefore(s.getStartDate()) && (s.getEndDate() == null || !today.isAfter(s.getEndDate())))
+            // Step 2: Map each active schedule to its corresponding DoseLog for today
             .map(s -> doseLogRepo.findByScheduleIdAndScheduledDate(s.getId(), today)
+            // If no log exists for today yet, create a temporary "PENDING" entry in-memory
                 .orElseGet(() -> {
                     DoseLog pending = new DoseLog();
                     pending.setSchedule(s);
