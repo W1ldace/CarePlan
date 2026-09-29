@@ -32,10 +32,10 @@
                         <i class="bi bi-people-fill"></i> Patient Directory
                     </a>
                     <a class="nav-link" onclick="switchView('prescriptions')">
-                        <i class="bi bi-capsule-pill"></i> Prescriptions & Schedules
+                        <i class="bi bi-capsule-pill"></i> All Prescriptions & Schedules
                     </a>
                     <a class="nav-link" onclick="switchView('doses')">
-                        <i class="bi bi-clock-history"></i> Today's Dose Tracker
+                        <i class="bi bi-clock-history"></i> Daily Dose Tracker
                     </a>
 
                     <div class="nav-section-title">Monitoring</div>
@@ -133,7 +133,7 @@
                         <div class="dash-card">
                             <div class="dash-card-header">
                                 <h3 class="dash-card-title">
-                                    <i class="bi bi-calendar2-check text-primary"></i> Today's Dose Activity Feed
+                                    <i class="bi bi-calendar2-check text-primary"></i> Today's Dose Activity Feed (All Patients)
                                 </h3>
                                 <button class="btn btn-sm btn-outline-secondary" onclick="loadDashboardMasterFeed()">
                                     <i class="bi bi-arrow-clockwise"></i> Refresh Feed
@@ -144,8 +144,8 @@
                                     <table class="table table-dash table-hover align-middle">
                                         <thead>
                                             <tr>
-                                                <th>Patient</th>
-                                                <th>Medicine & Dosage</th>
+                                                <th>Patient Name</th>
+                                                <th>Schedule ID</th>
                                                 <th>Scheduled Time</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
@@ -165,7 +165,7 @@
                         <div class="dash-card border-start border-danger border-4">
                             <div class="dash-card-header bg-rose-subtle">
                                 <h3 class="dash-card-title text-danger">
-                                    <i class="bi bi-exclamation-triangle-fill"></i> High-Priority Alerts
+                                    <i class="bi bi-exclamation-triangle-fill"></i> High-Priority Alerts (All Patients)
                                 </h3>
                             </div>
                             <div class="card-body p-0">
@@ -177,11 +177,11 @@
 
                         <div class="dash-card">
                             <div class="dash-card-header">
-                                <h3 class="dash-card-title"><i class="bi bi-shield-check text-success"></i> Clinical Summary</h3>
+                                <h3 class="dash-card-title"><i class="bi bi-shield-check text-success"></i> System Status</h3>
                             </div>
                             <div class="card-body">
                                 <p class="small text-secondary mb-2">
-                                    Careplan system provides real-time REST API integration with MySQL database persistence.
+                                    Displaying master adherence data across all registered patients.
                                 </p>
                                 <div class="d-flex align-items-center gap-2 mt-3">
                                     <span class="badge bg-success"><i class="bi bi-check-lg"></i> Spring Boot 3.4</span>
@@ -198,7 +198,7 @@
                 <div class="top-bar">
                     <div>
                         <h1 class="page-title">Patient Directory</h1>
-                        <p class="page-subtitle">Registered patient records and assigned careplans</p>
+                        <p class="page-subtitle">All registered patient records and assigned careplans</p>
                     </div>
                     <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#registerPatientModal">
                         <i class="bi bi-person-plus me-1"></i> Register New Patient
@@ -209,7 +209,7 @@
                     <div class="dash-card-header">
                         <div class="d-flex align-items-center gap-2 w-50">
                             <i class="bi bi-search text-muted"></i>
-                            <input type="text" class="form-control form-control-sm" id="patientSearchInput" placeholder="Search patient name..." onkeyup="filterPatientDirectory()">
+                            <input type="text" class="form-control form-control-sm" id="patientSearchInput" placeholder="Filter patient name..." onkeyup="filterPatientDirectory()">
                         </div>
                         <button class="btn btn-sm btn-outline-secondary" onclick="loadPatients()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
                     </div>
@@ -234,12 +234,12 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: PRESCRIPTIONS & SCHEDULES -->
+            <!-- VIEW 3: ALL PRESCRIPTIONS & SCHEDULES -->
             <div id="prescriptions-view" class="view-section">
                 <div class="top-bar">
                     <div>
-                        <h1 class="page-title">Prescriptions & Schedules</h1>
-                        <p class="page-subtitle">Manage patient medicine prescriptions and timing configurations</p>
+                        <h1 class="page-title">All Prescriptions & Schedules</h1>
+                        <p class="page-subtitle">Master list of prescribed medications across all patients</p>
                     </div>
                     <button class="btn btn-success fw-semibold" style="border-radius:10px;" data-bs-toggle="modal" data-bs-target="#prescribeModal" onclick="populateModalPatients()">
                         <i class="bi bi-plus-circle me-1"></i> Add Prescription
@@ -248,18 +248,15 @@
 
                 <div class="dash-card">
                     <div class="dash-card-header">
-                        <div class="d-flex align-items-center gap-3 w-50">
-                            <label class="fw-bold text-primary mb-0" style="white-space:nowrap;">Select Patient:</label>
-                            <select class="form-select form-select-sm" id="prescriptionPatientSelect" onchange="loadPrescriptionsView()">
-                                <option value="">-- Choose Patient --</option>
-                            </select>
-                        </div>
+                        <h3 class="dash-card-title"><i class="bi bi-capsule-pill text-success"></i> Master Prescriptions Roster</h3>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="loadPrescriptionsView()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-dash table-hover align-middle">
                                 <thead>
                                     <tr>
+                                        <th>Patient Name</th>
                                         <th>Medicine Name</th>
                                         <th>Dosage</th>
                                         <th>Instructions</th>
@@ -267,7 +264,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="prescriptionsTable">
-                                    <tr><td colspan="4" class="text-center py-4 text-muted">Select a patient above to view active prescriptions.</td></tr>
+                                    <tr><td colspan="5" class="text-center py-4 text-muted">Loading all prescriptions...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -275,24 +272,19 @@
                 </div>
             </div>
 
-            <!-- VIEW 4: TODAY'S DOSE TRACKER -->
+            <!-- VIEW 4: DAILY DOSE TRACKER (ALL PATIENTS) -->
             <div id="doses-view" class="view-section">
                 <div class="top-bar">
                     <div>
                         <h1 class="page-title">Daily Dose Tracker</h1>
-                        <p class="page-subtitle">Track today's medication logs across all patients</p>
+                        <p class="page-subtitle">Master medication schedule and compliance logs for today (All Patients)</p>
                     </div>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="loadDoseTrackerView()"><i class="bi bi-arrow-clockwise"></i> Refresh Tracker</button>
                 </div>
 
                 <div class="dash-card">
                     <div class="dash-card-header">
-                        <div class="d-flex align-items-center gap-3 w-50">
-                            <label class="fw-bold text-primary mb-0" style="white-space:nowrap;">Filter Patient:</label>
-                            <select class="form-select form-select-sm" id="trackerPatientSelect" onchange="loadDoseTrackerView()">
-                                <option value="">-- All Patients --</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="loadDoseTrackerView()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                        <h3 class="dash-card-title"><i class="bi bi-calendar-check text-primary"></i> Today's Master Schedule Grid</h3>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -308,7 +300,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="doseTrackerTable">
-                                    <tr><td colspan="6" class="text-center py-4 text-muted">Loading today's dose logs...</td></tr>
+                                    <tr><td colspan="6" class="text-center py-4 text-muted">Loading today's dose logs for all patients...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -321,8 +313,9 @@
                 <div class="top-bar">
                     <div>
                         <h1 class="page-title">Alert Center & Compliance History</h1>
-                        <p class="page-subtitle">Monitor overdue dose warnings and audit missed prescription logs</p>
+                        <p class="page-subtitle">Master list of overdue warnings and missed prescription logs</p>
                     </div>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="loadAlertCenterView()"><i class="bi bi-arrow-clockwise"></i> Refresh Alerts</button>
                 </div>
 
                 <div class="row g-4">
@@ -330,15 +323,12 @@
                         <div class="dash-card border-start border-danger border-4">
                             <div class="dash-card-header bg-rose-subtle">
                                 <h3 class="dash-card-title text-danger">
-                                    <i class="bi bi-exclamation-triangle-fill"></i> Overdue Dose Alerts (>1 Hour)
+                                    <i class="bi bi-exclamation-triangle-fill"></i> Overdue Dose Alerts (>1 Hour) - All Patients
                                 </h3>
-                                <select class="form-select form-select-sm w-50" id="alertCenterPatientSelect" onchange="loadAlertCenterView()">
-                                    <option value="">-- Select Patient --</option>
-                                </select>
                             </div>
                             <div class="card-body p-0">
                                 <div class="list-group list-group-flush" id="alertCenterList">
-                                    <div class="list-group-item text-center py-4 text-muted">Select a patient to check overdue alerts.</div>
+                                    <div class="list-group-item text-center py-4 text-muted">Checking alerts...</div>
                                 </div>
                             </div>
                         </div>
@@ -347,36 +337,34 @@
                     <div class="col-lg-6">
                         <div class="dash-card">
                             <div class="dash-card-header">
-                                <h3 class="dash-card-title"><i class="bi bi-clock-history text-primary"></i> Missed Dose Log Audit</h3>
+                                <h3 class="dash-card-title"><i class="bi bi-clock-history text-primary"></i> Missed Dose History Audit</h3>
                             </div>
                             <div class="card-body">
                                 <div class="row g-2 mb-3">
-                                    <div class="col-md-4">
-                                        <select class="form-select form-select-sm" id="historyPatientSelect">
-                                            <option value="">-- Patient --</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label small fw-bold">From Date:</label>
                                         <input type="date" class="form-control form-control-sm" id="histStart">
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label small fw-bold">To Date:</label>
                                         <input type="date" class="form-control form-control-sm" id="histEnd">
                                     </div>
-                                    <div class="col-md-2">
-                                        <button class="btn btn-sm btn-primary w-100" onclick="loadMissedHistory()"><i class="bi bi-search"></i></button>
+                                    <div class="col-md-2 d-flex align-items-end">
+                                        <button class="btn btn-sm btn-primary w-100" onclick="loadMissedHistory()"><i class="bi bi-search"></i> Search</button>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
-                                    <table class="table table-sm table-bordered align-middle">
+                                    <table class="table table-custom table-sm table-bordered align-middle">
                                         <thead class="table-light">
                                             <tr>
+                                                <th>Patient Name</th>
                                                 <th>Date</th>
                                                 <th>Time</th>
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody id="historyTable">
-                                            <tr><td colspan="3" class="text-center text-muted py-3">Select dates and click search.</td></tr>
+                                            <tr><td colspan="4" class="text-center text-muted py-3">Click Search to load missed dose records.</td></tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -499,9 +487,9 @@
 
             if (viewName === 'dash') loadAllData();
             if (viewName === 'patients') loadPatients();
-            if (viewName === 'prescriptions') loadPatientDropdowns();
+            if (viewName === 'prescriptions') loadPrescriptionsView();
             if (viewName === 'doses') loadDoseTrackerView();
-            if (viewName === 'alerts') loadPatientDropdowns();
+            if (viewName === 'alerts') loadAlertCenterView();
         }
 
         function showAlert(msg, type = 'success') {
@@ -517,26 +505,33 @@
             return str ? String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
         }
 
+        async function fetchPatients() {
+            try {
+                const res = await fetch('/api/patients');
+                allPatients = await res.json();
+                populateModalPatients();
+                return allPatients;
+            } catch (err) {
+                return [];
+            }
+        }
+
         async function loadAllData() {
-            await loadPatients();
+            await fetchPatients();
+            document.getElementById('statPatients').innerText = allPatients.length;
+
+            let totalMeds = 0;
+            allPatients.forEach(p => { if (p.medicines) totalMeds += p.medicines.length; });
+            document.getElementById('statMedicines').innerText = totalMeds;
+
+            renderPatientTable(allPatients);
             await loadDashboardMasterFeed();
         }
 
         async function loadPatients() {
-            try {
-                const res = await fetch('/api/patients');
-                allPatients = await res.json();
-                document.getElementById('statPatients').innerText = allPatients.length;
-
-                let totalMeds = 0;
-                allPatients.forEach(p => { if (p.medicines) totalMeds += p.medicines.length; });
-                document.getElementById('statMedicines').innerText = totalMeds;
-
-                renderPatientTable(allPatients);
-                populateModalPatients();
-            } catch (err) {
-                console.error(err);
-            }
+            await fetchPatients();
+            document.getElementById('statPatients').innerText = allPatients.length;
+            renderPatientTable(allPatients);
         }
 
         function renderPatientTable(patients) {
@@ -554,7 +549,7 @@
                     <td><span class="badge bg-info text-dark">${p.medicines ? p.medicines.length : 0} Medicines</span></td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary" onclick="quickTrackPatient(${p.id})">
-                            <i class="bi bi-clock-history me-1"></i> View Doses
+                            <i class="bi bi-clock-history me-1"></i> Track Doses
                         </button>
                     </td>
                 </tr>
@@ -571,7 +566,9 @@
         async function loadDashboardMasterFeed() {
             const tbody = document.getElementById('masterDoseFeed');
             const alertFeed = document.getElementById('dashOverdueFeed');
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2"></div>Loading live dose activity...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2"></div>Loading master dose feed...</td></tr>`;
+
+            if (!allPatients.length) await fetchPatients();
 
             let masterDoses = [];
             let overdueAlerts = [];
@@ -580,15 +577,15 @@
                 try {
                     const res = await fetch(`/api/patients/${p.id}/doses/today`);
                     const doses = await res.json();
-                    doses.forEach(d => {
-                        masterDoses.push({ ...d, patientName: p.name, patientId: p.id });
-                    });
+                    if (Array.isArray(doses)) {
+                        doses.forEach(d => masterDoses.push({ ...d, patientName: p.name, patientId: p.id }));
+                    }
 
                     const alertRes = await fetch(`/api/patients/${p.id}/alerts/overdue`);
                     const alerts = await alertRes.json();
-                    alerts.forEach(a => {
-                        overdueAlerts.push({ ...a, patientName: p.name, patientId: p.id });
-                    });
+                    if (Array.isArray(alerts)) {
+                        alerts.forEach(a => overdueAlerts.push({ ...a, patientName: p.name, patientId: p.id }));
+                    }
                 } catch (e) {}
             }
 
@@ -596,7 +593,7 @@
             document.getElementById('statAlerts').innerText = overdueAlerts.length;
 
             if (!masterDoses.length) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No medication doses scheduled for today.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No medication doses scheduled for today across all patients.</td></tr>`;
             } else {
                 tbody.innerHTML = masterDoses.map(d => {
                     const statusKey = (d.status || 'PENDING').toUpperCase();
@@ -604,19 +601,23 @@
                     if (statusKey === 'TAKEN') badgeCss = 'badge-taken';
                     if (statusKey === 'MISSED') badgeCss = 'badge-missed';
                     const isTaken = statusKey === 'TAKEN';
+                    const isMissed = statusKey === 'MISSED';
+                    const schedId = (d.schedule && d.schedule.id) ? d.schedule.id : (d.id || 0);
+                    const schedDate = d.scheduledDate || new Date().toISOString().split('T')[0];
 
                     return `
                         <tr>
                             <td class="fw-bold text-primary">${escapeHtml(d.patientName)}</td>
-                            <td>Schedule #${d.schedule ? d.schedule.id : ''}</td>
+                            <td>Schedule #${schedId}</td>
                             <td class="fw-bold"><i class="bi bi-clock text-primary me-1"></i> ${d.scheduledTime || ''}</td>
                             <td><span class="badge-pill ${badgeCss}">${statusKey}</span></td>
                             <td>
-                                ${isTaken ? '<span class="text-success small fw-bold"><i class="bi bi-check-all"></i> Logged</span>' : `
-                                    <button class="btn btn-sm btn-success me-1" onclick="logDoseStatus(${d.schedule.id}, '${d.scheduledDate}', 'TAKEN')">
+                                ${isTaken ? '<span class="text-success small fw-bold"><i class="bi bi-check-all"></i> Logged (Taken)</span>' : 
+                                  isMissed ? '<span class="text-danger small fw-bold"><i class="bi bi-x-circle-fill me-1"></i> Logged (Missed)</span>' : `
+                                    <button class="btn btn-sm btn-success me-1" onclick="logDoseStatus(${schedId}, '${schedDate}', 'TAKEN')">
                                         Mark Taken
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="logDoseStatus(${d.schedule.id}, '${d.scheduledDate}', 'MISSED')">
+                                    <button class="btn btn-sm btn-outline-danger" onclick="logDoseStatus(${schedId}, '${schedDate}', 'MISSED')">
                                         Missed
                                     </button>
                                 `}
@@ -648,10 +649,8 @@
             const options = '<option value="">-- Select Patient --</option>' + 
                 allPatients.map(p => `<option value="${p.id}">#${p.id} - ${escapeHtml(p.name)}</option>`).join('');
             
-            ['modalPatientSelect', 'prescriptionPatientSelect', 'trackerPatientSelect', 'alertCenterPatientSelect', 'historyPatientSelect'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = options;
-            });
+            const modalSelect = document.getElementById('modalPatientSelect');
+            if (modalSelect) modalSelect.innerHTML = options;
         }
 
         async function createPatient(e) {
@@ -674,7 +673,7 @@
                 showAlert(`Patient "${data.name}" registered successfully!`);
                 document.getElementById('patientForm').reset();
                 bootstrap.Modal.getInstance(document.getElementById('registerPatientModal')).hide();
-                loadPatients();
+                loadAllData();
             } catch (err) {
                 showAlert('Error saving patient.', 'danger');
             }
@@ -714,8 +713,7 @@
                 showAlert(`Prescription "${data.name}" added successfully!`);
                 document.getElementById('medForm').reset();
                 bootstrap.Modal.getInstance(document.getElementById('prescribeModal')).hide();
-                loadPatients();
-                loadDashboardMasterFeed();
+                loadAllData();
             } catch (err) {
                 showAlert('Error submitting prescription.', 'danger');
             }
@@ -738,7 +736,7 @@
                     return;
                 }
                 showAlert(`Dose slot marked as ${status}!`);
-                loadDashboardMasterFeed();
+                loadAllData();
             } catch (err) {
                 showAlert('Error updating dose status.', 'danger');
             }
@@ -746,86 +744,92 @@
 
         function quickTrackPatient(patientId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav .nav-link').forEach(el => el.classList.remove('active'));
             document.getElementById('doses-view').classList.add('active');
-            document.getElementById('trackerPatientSelect').value = patientId;
             loadDoseTrackerView();
         }
 
+        // VIEW 3: ALL PRESCRIPTIONS Across ALL Patients (No Dropdown Required!)
         async function loadPrescriptionsView() {
-            const patientId = document.getElementById('prescriptionPatientSelect').value;
             const tbody = document.getElementById('prescriptionsTable');
-            if (!patientId) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">Select a patient above to view prescriptions.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2"></div>Loading all prescriptions across all patients...</td></tr>`;
+
+            if (!allPatients.length) await fetchPatients();
+
+            let allPrescriptions = [];
+            allPatients.forEach(p => {
+                if (p.medicines && p.medicines.length > 0) {
+                    p.medicines.forEach(m => {
+                        allPrescriptions.push({ ...m, patientName: p.name });
+                    });
+                }
+            });
+
+            if (!allPrescriptions.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No prescriptions recorded across any patients yet.</td></tr>`;
                 return;
             }
 
-            try {
-                const res = await fetch(`/api/patients/${patientId}`);
-                const p = await res.json();
-                if (!p.medicines || !p.medicines.length) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">No prescriptions recorded for ${escapeHtml(p.name)}.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = p.medicines.map(m => `
-                    <tr>
-                        <td class="fw-bold">${escapeHtml(m.name)}</td>
-                        <td><span class="badge bg-light text-dark border">${escapeHtml(m.dosage || 'N/A')}</span></td>
-                        <td class="small text-secondary">${escapeHtml(m.instructions || 'None')}</td>
-                        <td>
-                            ${m.schedules ? m.schedules.map(s => `<span class="badge bg-primary me-1"><i class="bi bi-clock"></i> ${s.scheduledTime}</span> <span class="badge bg-secondary">${s.frequency}</span>`).join('') : ''}
-                        </td>
-                    </tr>
-                `).join('');
-            } catch (err) {}
+            tbody.innerHTML = allPrescriptions.map(m => `
+                <tr>
+                    <td class="fw-bold text-primary">${escapeHtml(m.patientName)}</td>
+                    <td class="fw-bold text-dark">${escapeHtml(m.name)}</td>
+                    <td><span class="badge bg-light text-dark border">${escapeHtml(m.dosage || 'N/A')}</span></td>
+                    <td class="small text-secondary">${escapeHtml(m.instructions || 'None')}</td>
+                    <td>
+                        ${m.schedules ? m.schedules.map(s => `<span class="badge bg-primary me-1"><i class="bi bi-clock"></i> ${s.scheduledTime}</span> <span class="badge bg-secondary">${s.frequency}</span>`).join('') : '<span class="text-muted">No schedule</span>'}
+                    </td>
+                </tr>
+            `).join('');
         }
 
+        // VIEW 4: ALL TODAY'S DOSES Across ALL Patients (No Dropdown Required!)
         async function loadDoseTrackerView() {
-            const patientId = document.getElementById('trackerPatientSelect').value;
             const tbody = document.getElementById('doseTrackerTable');
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2"></div>Loading today's master dose tracker across all patients...</td></tr>`;
 
-            if (patientId) {
-                const p = allPatients.find(x => String(x.id) === String(patientId));
-                const res = await fetch(`/api/patients/${patientId}/doses/today`);
-                const doses = await res.json();
-                renderDoseTrackerRows(doses, p ? p.name : 'Patient #' + patientId, tbody);
-            } else {
-                let allDoses = [];
-                for (const p of allPatients) {
+            if (!allPatients.length) await fetchPatients();
+
+            let allDoses = [];
+            for (const p of allPatients) {
+                try {
                     const res = await fetch(`/api/patients/${p.id}/doses/today`);
                     const doses = await res.json();
-                    doses.forEach(d => allDoses.push({ ...d, patientName: p.name }));
-                }
-                renderDoseTrackerRows(allDoses, null, tbody);
+                    if (Array.isArray(doses)) {
+                        doses.forEach(d => allDoses.push({ ...d, patientName: p.name }));
+                    }
+                } catch (e) {}
             }
-        }
 
-        function renderDoseTrackerRows(doses, singleName, tbody) {
-            if (!doses.length) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No dose logs scheduled for today.</td></tr>`;
+            if (!allDoses.length) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No dose logs scheduled for today across any patients.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = doses.map(d => {
+            tbody.innerHTML = allDoses.map(d => {
                 const statusKey = (d.status || 'PENDING').toUpperCase();
                 let badgeCss = 'badge-pending';
                 if (statusKey === 'TAKEN') badgeCss = 'badge-taken';
                 if (statusKey === 'MISSED') badgeCss = 'badge-missed';
                 const isTaken = statusKey === 'TAKEN';
+                const isMissed = statusKey === 'MISSED';
+                const schedId = (d.schedule && d.schedule.id) ? d.schedule.id : (d.id || 0);
+                const schedDate = d.scheduledDate || new Date().toISOString().split('T')[0];
 
                 return `
                     <tr>
-                        <td class="fw-bold text-primary">${escapeHtml(singleName || d.patientName || 'N/A')}</td>
-                        <td>Schedule #${d.schedule ? d.schedule.id : ''}</td>
+                        <td class="fw-bold text-primary">${escapeHtml(d.patientName)}</td>
+                        <td>Schedule #${schedId}</td>
                         <td class="fw-bold"><i class="bi bi-clock text-primary me-1"></i> ${d.scheduledTime || ''}</td>
                         <td>${d.scheduledDate || ''}</td>
                         <td><span class="badge-pill ${badgeCss}">${statusKey}</span></td>
                         <td>
-                            ${isTaken ? '<span class="text-success small fw-bold"><i class="bi bi-check-all"></i> Logged</span>' : `
-                                <button class="btn btn-sm btn-success me-1" onclick="logDoseStatus(${d.schedule.id}, '${d.scheduledDate}', 'TAKEN')">
+                            ${isTaken ? '<span class="text-success small fw-bold"><i class="bi bi-check-all"></i> Logged (Taken)</span>' : 
+                              isMissed ? '<span class="text-danger small fw-bold"><i class="bi bi-x-circle-fill me-1"></i> Logged (Missed)</span>' : `
+                                <button class="btn btn-sm btn-success me-1" onclick="logDoseStatus(${schedId}, '${schedDate}', 'TAKEN')">
                                     Mark Taken
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="logDoseStatus(${d.schedule.id}, '${d.scheduledDate}', 'MISSED')">
+                                <button class="btn btn-sm btn-outline-danger" onclick="logDoseStatus(${schedId}, '${schedDate}', 'MISSED')">
                                     Missed
                                 </button>
                             `}
@@ -835,64 +839,81 @@
             }).join('');
         }
 
+        // VIEW 5: ALERT CENTER Across ALL Patients (No Dropdown Required!)
         async function loadAlertCenterView() {
-            const patientId = document.getElementById('alertCenterPatientSelect').value;
             const container = document.getElementById('alertCenterList');
-            if (!patientId) {
-                container.innerHTML = `<div class="list-group-item text-center py-4 text-muted">Select a patient to check overdue alerts.</div>`;
+            container.innerHTML = `<div class="list-group-item text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2"></div>Checking overdue alerts across all patients...</div>`;
+
+            if (!allPatients.length) await fetchPatients();
+
+            let allAlerts = [];
+            for (const p of allPatients) {
+                try {
+                    const res = await fetch(`/api/patients/${p.id}/alerts/overdue`);
+                    const alerts = await res.json();
+                    if (Array.isArray(alerts)) {
+                        alerts.forEach(a => allAlerts.push({ ...a, patientName: p.name, patientId: p.id }));
+                    }
+                } catch (e) {}
+            }
+
+            if (!allAlerts.length) {
+                container.innerHTML = `<div class="list-group-item text-center py-4 text-success"><i class="bi bi-shield-check fs-3 d-block mb-1"></i> All patient doses are up to date! No overdue alerts.</div>`;
                 return;
             }
 
-            try {
-                const res = await fetch(`/api/patients/${patientId}/alerts/overdue`);
-                const alerts = await res.json();
-                if (!alerts.length) {
-                    container.innerHTML = `<div class="list-group-item text-center py-4 text-success"><i class="bi bi-shield-check fs-3 d-block mb-1"></i> No overdue alerts for this patient!</div>`;
-                    return;
-                }
-
-                container.innerHTML = alerts.map(s => `
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="badge-pill badge-overdue mb-1"><i class="bi bi-exclamation-triangle-fill"></i> OVERDUE >1 HOUR</span>
-                            <div class="fw-bold">Scheduled Time: ${s.scheduledTime}</div>
-                            <small class="text-muted">Frequency: ${s.frequency}</small>
-                        </div>
-                        <button class="btn btn-sm btn-outline-danger" onclick="quickTrackPatient(${patientId})">
-                            Log Dose
-                        </button>
+            container.innerHTML = allAlerts.map(s => `
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge-pill badge-overdue mb-1"><i class="bi bi-exclamation-triangle-fill"></i> OVERDUE >1 HOUR</span>
+                        <div class="fw-bold text-dark">${escapeHtml(s.patientName)}</div>
+                        <div class="small text-muted"><i class="bi bi-clock me-1"></i> Scheduled Time: ${s.scheduledTime} (${s.frequency})</div>
                     </div>
-                `).join('');
-            } catch (e) {}
+                    <button class="btn btn-sm btn-outline-danger" onclick="quickTrackPatient(${s.patientId})">
+                        Resolve Alert
+                    </button>
+                </div>
+            `).join('');
         }
 
         async function loadMissedHistory() {
-            const patientId = document.getElementById('historyPatientSelect').value;
             const startDate = document.getElementById('histStart').value;
             const endDate = document.getElementById('histEnd').value;
             const tbody = document.getElementById('historyTable');
 
-            if (!patientId || !startDate || !endDate) {
-                showAlert('Select patient and valid dates.', 'warning');
+            if (!startDate || !endDate) {
+                showAlert('Select valid dates for search.', 'warning');
                 return;
             }
 
-            try {
-                const res = await fetch(`/api/patients/${patientId}/doselogs/missed?startDate=${startDate}&endDate=${endDate}`);
-                const logs = await res.json();
-                if (!logs.length) {
-                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No missed doses found.</td></tr>`;
-                    return;
-                }
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3"><div class="spinner-border spinner-border-sm me-2"></div>Searching missed logs across all patients...</td></tr>`;
 
-                tbody.innerHTML = logs.map(l => `
-                    <tr>
-                        <td>${l.scheduledDate}</td>
-                        <td>${l.scheduledTime || 'N/A'}</td>
-                        <td><span class="badge-pill badge-missed">${l.status}</span></td>
-                    </tr>
-                `).join('');
-            } catch (err) {}
+            if (!allPatients.length) await fetchPatients();
+
+            let allMissedLogs = [];
+            for (const p of allPatients) {
+                try {
+                    const res = await fetch(`/api/patients/${p.id}/doselogs/missed?startDate=${startDate}&endDate=${endDate}`);
+                    const logs = await res.json();
+                    if (Array.isArray(logs)) {
+                        logs.forEach(l => allMissedLogs.push({ ...l, patientName: p.name }));
+                    }
+                } catch (e) {}
+            }
+
+            if (!allMissedLogs.length) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No missed doses found across any patients for this date range.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = allMissedLogs.map(l => `
+                <tr>
+                    <td class="fw-bold text-primary">${escapeHtml(l.patientName)}</td>
+                    <td>${l.scheduledDate}</td>
+                    <td>${l.scheduledTime || 'N/A'}</td>
+                    <td><span class="badge-pill badge-missed">${l.status}</span></td>
+                </tr>
+            `).join('');
         }
     </script>
     <!-- Bootstrap 5 JS -->

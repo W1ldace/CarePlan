@@ -25,6 +25,6 @@ public class DoseLog {
 
     @ManyToOne
     @JoinColumn(name = "schedule_id")
-    @JsonIgnore
+    @JsonIgnoreProperties({"logs", "medicine"})
     private Schedule schedule;
 }
